@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: patient-records
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: patient-records
+  template:
+    metadata:
+      labels:
+        app: patient-records
+    spec:
+      containers:
+        - name: patient-records
+          image: raghuldravid/patient-records:v1
+          ports:
+            - containerPort: 5000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Patient Records</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 30px auto; padding: 0 15px; background: #f4f6f8; }
+    h1 { color: #1f4e79; }
+    form, table { background: #fff; padding: 15px; border-radius: 6px; width: 100%; box-sizing: border-box; }
+    input, select { padding: 8px; margin: 4px 4px 4px 0; }
+    button { padding: 8px 14px; background: #1f4e79; color: #fff; border: 0; border-radius: 4px; cursor: pointer; }
+    table { border-collapse: collapse; margin-top: 20px; }
+    th, td { border-bottom: 1px solid #ddd; padding: 8px; text-align: left; }
+    .success { color: green; } .error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Patient Records</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <p class="{{ category }}">{{ message }}</p>
+    {% endfor %}
+  {% endwith %}
+
+  <form method="POST" action="{{ url_for('register') }}">
+    <h3>Register Patient</h3>
+    <input name="name" placeholder="Name" required>
+    <input name="age" type="number" min="0" placeholder="Age" required>
+    <select name="gender" required>
+      <option value="">Gender</option>
+      <option>Male</option><option>Female</option><option>Other</option>
+    </select>
+    <input name="phone" placeholder="Phone" required>
+    <input name="address" placeholder="Address">
+    <button type="submit">Register</button>
+  </form>
+
+  <form method="GET" action="{{ url_for('index') }}" style="margin-top:15px">
+    <input name="q" value="{{ q }}" placeholder="Search by name or phone">
+    <button type="submit">Search</button>
+  </form>
+
+  <table>
+    <tr><th>ID</th><th>Name</th><th>Age</th><th>Gender</th><th>Phone</th><th>Address</th><th></th></tr>
+    {% for p in patients %}
+    <tr>
+      <td>{{ p.id }}</td><td>{{ p.name }}</td><td>{{ p.age }}</td>
+      <td>{{ p.gender }}</td><td>{{ p.phone }}</td><td>{{ p.address }}</td>
+      <td>
+        <form method="POST" action="{{ url_for('delete', patient_id=p.id) }}" style="padding:0">
+          <button type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7">No patients found.</td></tr>
+    {% endfor %}
+  </table>
+</body>
+</html>
